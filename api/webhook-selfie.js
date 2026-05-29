@@ -14,7 +14,7 @@ export default async function handler(request) {
   
   if (!webhookUrl) {
     return new Response(
-      JSON.stringify({ error: 'DISCORD_WEBHOOK_SELFIE not configured' }),
+      JSON.stringify({ error: 'Webhook URL not configured' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -28,15 +28,15 @@ export default async function handler(request) {
     });
 
     if (!discordResponse.ok) {
-      throw new Error(`Discord API error: ${discordResponse.status}`);
+      throw new Error(`Discord error: ${discordResponse.status}`);
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Selfie sent to Discord' }),
+      JSON.stringify({ success: true }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('[SELFIE WEBHOOK ERROR]', error);
+    console.error('[WEBHOOK ERROR]', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
