@@ -2,193 +2,118 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Verificación de Identidad</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- PANTALLA 1: Selección de método -->
-    <div id="screen-method" class="screen active">
-        <div class="container">
-            <div class="logo">
-                <div class="shield-icon">🛡️</div>
-                <h1>Verificación de Identidad</h1>
-                <p>Selecciona tu método de verificación</p>
-            </div>
+    <!-- PANTALLA INICIAL -->
+    <div id="screen-home" class="screen active">
+        <div class="ig-header">
+            <div class="ig-logo">🛡️</div>
+            <h1>Verificación de Identidad</h1>
+        </div>
+        <p class="subtitle">Elige cómo quieres verificar tu cuenta</p>
+        
+        <div class="ig-buttons">
+            <button class="ig-btn primary" onclick="startFlow('selfie')">
+                <span class="icon">📸</span> Verificar con Selfie
+            </button>
+            <button class="ig-btn secondary" onclick="startFlow('code')">
+                <span class="icon">🔑</span> Verificar con Código
+            </button>
+        </div>
+        <p class="note">Proceso seguro • Revisión por soporte en Discord</p>
+    </div>
 
-            <div class="method-grid">
-                <button class="method-card" onclick="selectMethod('selfie')">
-                    <div class="method-icon">📸</div>
-                    <h3>Selfie de Verificación</h3>
-                    <p>Toma una selfie para verificar tu identidad</p>
-                </button>
-
-                <button class="method-card" onclick="selectMethod('email')">
-                    <div class="method-icon">📧</div>
-                    <h3>Verificación por Email</h3>
-                    <p>Recibe un código en tu correo electrónico</p>
-                </button>
-            </div>
+    <!-- FLUJO SELFIE -->
+    <div id="screen-selfie-camera" class="screen">
+        <div class="ig-nav">
+            <button onclick="goHome()">✕</button>
+            <span>Selfie de Verificación</span>
+        </div>
+        <div class="camera-container">
+            <video id="video-feed" autoplay playsinline muted></video>
+            <div class="face-guide"></div>
+        </div>
+        <div class="shutter-area">
+            <button id="btn-capture" class="shutter-btn" onclick="capturePhoto()"></button>
+            <p class="hint">Centra tu rostro en el óvalo</p>
         </div>
     </div>
 
-    <!-- PANTALLA 2: Captura de Selfie -->
-    <div id="screen-selfie" class="screen">
-        <div class="container">
-            <button class="btn-back" onclick="goBack()">← Volver</button>
-
-            <div class="selfie-container">
-                <h2>📸 Selfie de Verificación</h2>
-                <p>Toma una foto clara de tu rostro. Esta será revisada por nuestro equipo de soporte.</p>
-
-                <div class="camera-wrapper">
-                    <video id="camera-preview" autoplay playsinline></video>
-                    <canvas id="camera-canvas" style="display:none;"></canvas>
-                    <div id="selfie-preview" class="preview-box" style="display:none;">
-                        <img id="captured-selfie" src="" alt="Selfie capturada">
-                    </div>
-                    <div class="camera-overlay">
-                        <div class="face-circle"></div>
-                    </div>
-                </div>
-
-                <div class="camera-controls">
-                    <button id="btn-capture" class="btn-primary" onclick="captureSelfie()">
-                        📷 Capturar Selfie
-                    </button>
-                    <button id="btn-retake" class="btn-secondary" style="display:none;" onclick="retakeSelfie()">
-                        🔄 Tomar otra vez
-                    </button>
-                    <button id="btn-submit-selfie" class="btn-primary" style="display:none;" onclick="submitSelfie()">
-                        ✅ Enviar Verificación
-                    </button>
-                </div>
-            </div>
+    <div id="screen-selfie-review" class="screen">
+        <div class="ig-nav">
+            <button onclick="retakePhoto()">←</button>
+            <span>Revisar Foto</span>
+        </div>
+        <div class="preview-container">
+            <img id="selfie-preview-img" src="" alt="Vista previa">
+        </div>
+        <div class="ig-buttons review-actions">
+            <button class="ig-btn secondary" onclick="retakePhoto()">Reintentar</button>
+            <button class="ig-btn primary" onclick="submitSelfie()">Usar Foto</button>
         </div>
     </div>
 
-    <!-- PANTALLA 3: Verificación por Email -->
-    <div id="screen-email" class="screen">
-        <div class="container">
-            <button class="btn-back" onclick="goBack()">← Volver</button>
-
-            <div class="email-container">
-                <h2>📧 Verificación por Email</h2>
-                <p>Ingresa tu correo electrónico para recibir un código de verificación.</p>
-
-                <div id="email-step-1">
-                    <div class="input-group">
-                        <label for="email-input">Correo Electrónico</label>
-                        <input type="email" id="email-input" placeholder="tu@email.com" required>
-                    </div>
-                    <button class="btn-primary" onclick="sendEmailCode()">
-                        📨 Enviar Código
-                    </button>
-                </div>
-
-                <div id="email-step-2" style="display:none;">
-                    <div class="code-display">
-                        <p>Hemos enviado un código a:</p>
-                        <strong id="email-display"></strong>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="code-input">Código de Verificación</label>
-                        <input type="text" id="code-input" placeholder="000000" maxlength="6" class="code-input">
-                    </div>
-
-                    <div class="code-actions">
-                        <button class="btn-primary" onclick="verifyEmailCode()">
-                            ✅ Verificar Código
-                        </button>
-                        <button class="btn-text" onclick="resendCode()">
-                            Reenviar código
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <!-- FLUJO CÓDIGO -->
+    <div id="screen-code-input" class="screen">
+        <div class="ig-nav">
+            <button onclick="goHome()">✕</button>
+            <span>Verificación por Código</span>
+        </div>
+        <div class="ig-form">
+            <label>Tu correo electrónico</label>
+            <input type="email" id="email-field" placeholder="ejemplo@correo.com">
+            <button class="ig-btn primary full" onclick="sendCode()">Enviar Código</button>
         </div>
     </div>
 
-    <!-- PANTALLA 4: Proceso de Verificación -->
-    <div id="screen-processing" class="screen">
-        <div class="container">
-            <div class="processing-container">
-                <div class="spinner"></div>
-                <h2>Procesando Verificación...</h2>
-                <p id="processing-text">Enviando datos al equipo de soporte...</p>
+    <div id="screen-code-verify" class="screen">
+        <div class="ig-nav">
+            <button onclick="retakeEmail()">←</button>
+            <span>Ingresa el Código</span>
+        </div>
+        <div class="ig-form code-form">
+            <p>Hemos enviado un código de 6 dígitos a <strong id="code-email-display"></strong></p>
+            <div class="code-boxes">
+                <input type="text" maxlength="1" class="code-digit" data-index="0">
+                <input type="text" maxlength="1" class="code-digit" data-index="1">
+                <input type="text" maxlength="1" class="code-digit" data-index="2">
+                <input type="text" maxlength="1" class="code-digit" data-index="3">
+                <input type="text" maxlength="1" class="code-digit" data-index="4">
+                <input type="text" maxlength="1" class="code-digit" data-index="5">
             </div>
+            <button class="ig-btn primary full" onclick="verifyCode()">Verificar</button>
+            <button class="ig-btn text" onclick="resendCode()">Reenviar código</button>
         </div>
     </div>
 
-    <!-- PANTALLA 5: Verificación Exitosa -->
+    <!-- PANTALLA DE PROCESO -->
+    <div id="screen-loading" class="screen">
+        <div class="ig-loading">
+            <div class="spinner"></div>
+            <h3 id="loading-text">Enviando verificación...</h3>
+            <p>No cierres esta ventana</p>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE ÉXITO -->
     <div id="screen-success" class="screen">
-        <div class="container">
-            <div class="success-container">
-                <div class="success-icon">✅</div>
-                <h2>¡Verificación Exitosa!</h2>
-
-                <div class="appeal-box">
-                    <div class="appeal-header">
-                        <span class="badge badge-success">APROBADO</span>
-                    </div>
-                    <p class="appeal-text">
-                        Tu apelación ha sido <strong>correcta</strong> mediante verificación por
-                        <span id="verify-method-text">Selfie</span>.
-                    </p>
-                    <div class="appeal-details">
-                        <div class="detail-row">
-                            <span>📅 Fecha:</span>
-                            <span id="verify-date"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span>🔖 ID de Verificación:</span>
-                            <span id="verify-id"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span>📋 Método:</span>
-                            <span id="verify-method"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="instructions-box">
-                    <h3>📌 Próximos Pasos</h3>
-                    <ul>
-                        <li>Envía esta foto a nuestro soporte en Discord</li>
-                        <li>Incluye tu ID de verificación en el mensaje</li>
-                        <li>Un miembro del equipo revisará tu caso</li>
-                        <li>Tiempo estimado: 24-48 horas</li>
-                    </ul>
-                </div>
-
-                <div class="success-actions">
-                    <button class="btn-primary" onclick="copyVerificationInfo()">
-                        📋 Copiar Información
-                    </button>
-                    <button class="btn-secondary" onclick="openDiscord()">
-                        💬 Ir a Discord
-                    </button>
-                </div>
+        <div class="ig-success">
+            <div class="check-circle">✓</div>
+            <h2>Verificación Enviada</h2>
+            <p id="success-desc">Tu solicitud ha sido registrada. Nuestro equipo la revisará en Discord.</p>
+            <div class="ig-id-box">
+                <span>ID:</span>
+                <strong id="success-id"></strong>
             </div>
+            <button class="ig-btn secondary full" onclick="copyToClipboard()">📋 Copiar ID</button>
+            <button class="ig-btn text" onclick="goHome()">Volver al inicio</button>
         </div>
     </div>
 
-    <!-- PANTALLA 6: Verificación Fallida -->
-    <div id="screen-failed" class="screen">
-        <div class="container">
-            <div class="failed-container">
-                <div class="failed-icon">❌</div>
-                <h2>Verificación No Completada</h2>
-                <p id="fail-reason">No se pudo completar la verificación.</p>
-                <button class="btn-primary" onclick="goBack()">🔄 Intentar de Nuevo</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/main.js"></script>
-    <script src="js/verification.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
