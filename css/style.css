@@ -1,447 +1,132 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+    --ig-bg: #000000;
+    --ig-surface: #121212;
+    --ig-border: #262626;
+    --ig-text: #fafafa;
+    --ig-text-secondary: #a8a8a8;
+    --ig-primary: #0095f6;
+    --ig-primary-hover: #1877f2;
+    --ig-success: #2ecc71;
+    --ig-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
-    min-height: 100vh;
-    color: #ffffff;
-    overflow-x: hidden;
-}
-
-.container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 20px;
+    background: var(--ig-bg);
+    color: var(--ig-text);
+    font-family: var(--ig-font);
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
 }
 
-/* Screens */
 .screen {
     display: none;
-    animation: fadeIn 0.4s ease;
-}
-
-.screen.active {
-    display: flex;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Logo & Header */
-.logo {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.shield-icon {
-    font-size: 64px;
-    margin-bottom: 16px;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-h1 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-p {
-    color: #8892a4;
-    font-size: 14px;
-    text-align: center;
-    line-height: 1.5;
-}
-
-/* Method Cards */
-.method-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
     width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 0 20px;
+    animation: fadeIn 0.3s ease;
 }
+.screen.active { display: flex; }
 
-.method-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.method-card:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: #5865F2;
-    transform: translateY(-2px);
-}
+/* Headers & Nav */
+.ig-header { text-align: center; margin-top: 60px; margin-bottom: 30px; }
+.ig-logo { font-size: 48px; margin-bottom: 12px; }
+h1 { font-size: 22px; font-weight: 600; }
+.subtitle, .note { color: var(--ig-text-secondary); font-size: 14px; text-align: center; margin-bottom: 12px; }
+.note { margin-top: 40px; }
 
-.method-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
+.ig-nav {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 0; border-bottom: 1px solid var(--ig-border);
+    margin-bottom: 20px;
 }
-
-.method-card h3 {
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-
-.method-card p {
-    font-size: 13px;
-}
+.ig-nav button { background: none; border: none; color: var(--ig-text); font-size: 20px; cursor: pointer; }
+.ig-nav span { font-weight: 600; font-size: 16px; }
 
 /* Buttons */
-.btn-primary {
-    background: #5865F2;
-    color: white;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.3s ease;
-    margin-top: 12px;
+.ig-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+.ig-btn {
+    padding: 14px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
+.ig-btn.primary { background: var(--ig-primary); color: white; }
+.ig-btn.primary:hover { background: var(--ig-primary-hover); }
+.ig-btn.secondary { background: var(--ig-surface); color: var(--ig-text); border: 1px solid var(--ig-border); }
+.ig-btn.secondary:hover { background: #1a1a1a; }
+.ig-btn.text { background: none; color: var(--ig-text-secondary); font-size: 13px; margin-top: 8px; }
+.ig-btn.full { width: 100%; }
 
-.btn-primary:hover {
-    background: #4752c4;
-    transform: translateY(-1px);
+/* Camera IG Style */
+.camera-container {
+    position: relative; width: 100%; aspect-ratio: 4/5;
+    background: var(--ig-surface); border-radius: 16px; overflow: hidden; margin-bottom: 20px;
 }
-
-.btn-secondary {
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 14px 28px;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.3s ease;
-    margin-top: 12px;
+#video-feed { width: 100%; height: 100%; object-fit: cover; }
+.face-guide {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 65%; aspect-ratio: 3/4; border: 2px solid rgba(255,255,255,0.6);
+    border-radius: 50%; box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+    animation: pulseGuide 2s infinite ease-in-out;
 }
+@keyframes pulseGuide { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.9; } }
 
-.btn-text {
-    background: none;
-    color: #5865F2;
-    border: none;
-    padding: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: underline;
+.shutter-area { text-align: center; padding-bottom: 40px; }
+.shutter-btn {
+    width: 72px; height: 72px; border-radius: 50%; border: 4px solid white;
+    background: transparent; cursor: pointer; position: relative;
 }
-
-.btn-back {
-    background: none;
-    border: none;
-    color: #8892a4;
-    font-size: 14px;
-    cursor: pointer;
-    align-self: flex-start;
-    margin-bottom: 20px;
-    padding: 8px 0;
+.shutter-btn::after {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 60px; height: 60px; border-radius: 50%; background: white; transition: 0.2s;
 }
+.shutter-btn:active::after { width: 54px; height: 54px; background: #e0e0e0; }
+.hint { color: var(--ig-text-secondary); font-size: 13px; margin-top: 12px; }
 
-.btn-back:hover {
-    color: white;
+/* Preview */
+.preview-container {
+    width: 100%; aspect-ratio: 4/5; border-radius: 16px; overflow: hidden; margin-bottom: 20px;
 }
+#selfie-preview-img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Camera */
-.camera-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 360px;
-    aspect-ratio: 3/4;
-    background: #1a1a2e;
-    border-radius: 20px;
-    overflow: hidden;
-    margin: 20px auto;
-    border: 2px solid rgba(255,255,255,0.1);
+/* Forms & Code */
+.ig-form { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+.ig-form label { font-size: 14px; color: var(--ig-text-secondary); }
+.ig-form input {
+    background: var(--ig-surface); border: 1px solid var(--ig-border); padding: 14px;
+    border-radius: 10px; color: var(--ig-text); font-size: 16px; outline: none;
 }
+.ig-form input:focus { border-color: var(--ig-primary); }
 
-.camera-wrapper video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.code-form p { text-align: center; color: var(--ig-text-secondary); font-size: 14px; line-height: 1.5; }
+.code-form strong { color: var(--ig-text); }
+.code-boxes { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+.code-digit {
+    width: 44px; height: 54px; background: var(--ig-surface); border: 1px solid var(--ig-border);
+    border-radius: 10px; color: var(--ig-text); font-size: 24px; font-weight: 700;
+    text-align: center; outline: none; transition: 0.2s;
 }
+.code-digit:focus { border-color: var(--ig-primary); background: #1a1a1a; }
 
-.camera-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.face-circle {
-    width: 200px;
-    height: 260px;
-    border: 3px solid rgba(88, 101, 242, 0.6);
-    border-radius: 50%;
-    box-shadow: 0 0 0 9999px rgba(0,0,0,0.3);
-}
-
-.preview-box {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.preview-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Inputs */
-.input-group {
-    width: 100%;
-    margin-bottom: 16px;
-}
-
-.input-group label {
-    display: block;
-    font-size: 13px;
-    color: #8892a4;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 14px 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    color: white;
-    font-size: 16px;
-    font-family: 'Inter', sans-serif;
-    transition: border-color 0.3s ease;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: #5865F2;
-}
-
-.input-group input::placeholder {
-    color: #4a4a6a;
-}
-
-.code-input {
-    text-align: center;
-    font-size: 28px;
-    letter-spacing: 12px;
-    font-weight: 700;
-}
-
-/* Code Display */
-.code-display {
-    text-align: center;
-    padding: 20px;
-    background: rgba(88, 101, 242, 0.1);
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
-.code-display p {
-    margin-bottom: 4px;
-}
-
-.code-display strong {
-    color: white;
-    font-size: 16px;
-}
-
-/* Processing */
-.processing-container {
-    text-align: center;
-}
-
+/* Loading & Success */
+.ig-loading, .ig-success { text-align: center; margin-top: 100px; }
 .spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid rgba(255,255,255,0.1);
-    border-top-color: #5865F2;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 24px;
+    width: 40px; height: 40px; border: 3px solid var(--ig-border);
+    border-top-color: var(--ig-primary); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 20px;
 }
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.check-circle {
+    width: 72px; height: 72px; background: var(--ig-success); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin: 0 auto 20px; animation: pop 0.4s ease;
 }
-
-/* Success */
-.success-container, .failed-container {
-    text-align: center;
-    width: 100%;
-}
-
-.success-icon, .failed-icon {
-    font-size: 72px;
-    margin-bottom: 16px;
-    animation: popIn 0.5s ease;
-}
-
-@keyframes popIn {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
-.appeal-box {
-    background: rgba(88, 101, 242, 0.1);
-    border: 1px solid rgba(88, 101, 242, 0.3);
-    border-radius: 16px;
-    padding: 24px;
-    margin: 24px 0;
-    text-align: left;
-}
-
-.appeal-header {
-    margin-bottom: 12px;
-}
-
-.badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.badge-success {
-    background: rgba(35, 197, 94, 0.2);
-    color: #22c55e;
-    border: 1px solid rgba(35, 197, 94, 0.3);
-}
-
-.appeal-text {
-    color: #e0e0e0;
-    font-size: 15px;
-    text-align: left;
-    margin-bottom: 16px;
-}
-
-.appeal-text strong {
-    color: #22c55e;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 13px;
-}
-
-.detail-row span:first-child {
-    color: #8892a4;
-}
-
-.detail-row span:last-child {
-    color: white;
-    font-weight: 500;
-}
-
-.instructions-box {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 20px;
-    margin: 16px 0;
-    text-align: left;
-}
-
-.instructions-box h3 {
-    font-size: 15px;
-    margin-bottom: 12px;
-    color: white;
-}
-
-.instructions-box ul {
-    list-style: none;
-    padding: 0;
-}
-
-.instructions-box li {
-    padding: 6px 0;
-    font-size: 13px;
-    color: #8892a4;
-    position: relative;
-    padding-left: 20px;
-}
-
-.instructions-box li::before {
-    content: '•';
-    color: #5865F2;
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-}
-
-.success-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.success-actions .btn-primary,
-.success-actions .btn-secondary {
-    flex: 1;
-}
-
-/* Camera Controls */
-.camera-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 16px;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-    .container {
-        padding: 16px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    .success-actions {
-        flex-direction: column;
-    }
+@keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+.ig-id-box {
+    background: var(--ig-surface); border: 1px dashed var(--ig-border); padding: 12px;
+    border-radius: 8px; margin: 20px 0; font-size: 15px;
 }
