@@ -1,32 +1,47 @@
-export const config = { runtime: 'edge' };
+export const config = {
+  runtime: 'edge',
+};
 
-export default async function handler(req) {
-  if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+export default async function handler(request) {
+  // Solo permitir POST
+  if (request.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Método no permitido' }),
+      { status: 405, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_SELFIE;
-  if (!webhookUrl) return new Response('Webhook URL no configurada', { status: 500 });
+  
+  if (!webhookUrl) {
+    return new Response(
+      JSON.stringify({ error: 'Webhook no configurado en Vercel' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
   try {
-    const formData = await req.formData();
-    const response = await fetch(webhookUrl, {
+    const formData = await request.formData();
+    
+    // Reenviar a Discord
+    const discordResponse = await fetch(webhookUrl, {
       method: 'POST',
-      body: formData
+      body: formData,
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Discord error: ${response.status} - ${errText}`);
+    if (!discordResponse.ok) {
+      throw new Error(`Discord respondió: ${discordResponse.status}`);
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ success: true }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
-    console.error('[SELFIE WEBHOOK ERROR]', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error('[WEBHOOK ERROR]', error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
