@@ -3,10 +3,9 @@ export const config = {
 };
 
 export default async function handler(request) {
-  // Solo permitir POST
   if (request.method !== 'POST') {
     return new Response(
-      JSON.stringify({ error: 'Método no permitido' }),
+      JSON.stringify({ error: 'Method not allowed' }),
       { status: 405, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -15,7 +14,7 @@ export default async function handler(request) {
   
   if (!webhookUrl) {
     return new Response(
-      JSON.stringify({ error: 'Webhook no configurado en Vercel' }),
+      JSON.stringify({ error: 'DISCORD_WEBHOOK_SELFIE not configured' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -23,22 +22,21 @@ export default async function handler(request) {
   try {
     const formData = await request.formData();
     
-    // Reenviar a Discord
     const discordResponse = await fetch(webhookUrl, {
       method: 'POST',
       body: formData,
     });
 
     if (!discordResponse.ok) {
-      throw new Error(`Discord respondió: ${discordResponse.status}`);
+      throw new Error(`Discord API error: ${discordResponse.status}`);
     }
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, message: 'Selfie sent to Discord' }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('[WEBHOOK ERROR]', error);
+    console.error('[SELFIE WEBHOOK ERROR]', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
